@@ -80,7 +80,7 @@ if __name__ == '__main__':
         # Extract IDs
         ids_v = df_v['ID'].values
 
-        length = 200
+        length = 100
         n_steps = len(tags_v) // length
 
         assignment = []
