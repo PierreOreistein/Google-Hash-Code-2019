@@ -120,4 +120,4 @@ if __name__ == '__main__':
     # Save result_dct
 #    print(result_dct["c_memorable_momentst"]["assignment"][:5])
 #    print(result_dct["c_memorable_momentst"]["tags_save"][:5])
-    np.save('./Save/assignment_dct_100.npy', result_dct)
+    np.save('./Save/assignment_dct_' + str(length) + '.npy', result_dct)
