@@ -20,7 +20,7 @@ def pairwise_scores(li, n_jobs=1):
 
     pairs_ids = [(i, j) for i in range(nb_vertical) for j in range(i + 1, nb_vertical)]
     if n_jobs == 1:
-        for i, j in tqdm(pairs_ids):
+        for i, j in pairs_ids:
             li1 = li[i]
             li2 = li[j]
             score = union(li_1=li1, li_2=li2)
@@ -61,14 +61,57 @@ def get_assignments(df):
 
 
 if __name__ == '__main__':
+
+    # Load Data
     data_dct = np.load('./Save/data_dct.npy').item()
-    for dataframe_name in data_dct:
+
+    # Resulting data
+    result_dct = {}
+
+    for dataframe_name in tqdm(data_dct):
         df = data_dct[dataframe_name]
 
+        # Extract tags
         df_v = df.loc[df['H_V'] == 'V']
         tags_v = df_v['Tags_Int']
         tags_v = tags_v.str.split()
         tags_v = tags_v.apply(lambda x: [int(val) for val in x]).values
 
-        scores = pairwise_scores(tags_v)
-        # print(df.head())
+        # Extract IDs
+        ids_v = df_v['ID'].values
+
+        length = 200
+        n_steps = len(tags_v) // length
+
+        assignment = []
+
+        for k in tqdm(range(n_steps)):
+
+            if k != n_steps - 1:
+                sub_tags_v = tags_v[k * length: (k + 1) * length]
+                sub_ids_v = ids_v[k * length: (k + 1) * length]
+            else:
+                sub_tags_v = tags_v[k * length:]
+                sub_ids_v = ids_v[k * length:]
+
+            scores = pairwise_scores(sub_tags_v)
+
+            sub_assignment = kuhn_assignment(scores)
+
+            # Convertion to ids
+            sub_assignment_2 = []
+            for row, col in sub_assignment:
+
+                new_row = sub_ids_v[row]
+                new_col = sub_ids_v[col]
+
+                sub_assignment_2.append((new_row, new_col))
+
+            assignment.extend(sub_assignment_2)
+
+        # Update result_dct
+        result_dct[dataframe_name] = assignment
+
+    # Save result_dct
+    print(result_dct)
+    np.save('./Save/assignment_dct.npy', result_dct)

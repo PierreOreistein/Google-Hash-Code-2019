@@ -13,53 +13,12 @@ import re
 from tqdm import tqdm
 
 
-def readData(filename):
-    """Return the data of the file filename and save them as a numpy array."""
+# Load files
+data_dct = np.load('./Save/data_dct.npy').item()
+test_dct = np.load('./Save/test_dct.npy').item()
 
-    # Resulting dct
-    dct = {}
-
-    with open(filename) as f:
-
-        # Read the first line
-        R, C, L, H = f.readline().split()
-
-        # Append dct
-        dct["R"] = R
-        dct["C"] = C
-        dct["L"] = L
-        dct["H"] = H
-
-        # Resulting dct
-        dct["Grid"] = []
-
-        # Read the other lines and save them in
-        for line in f:
-            dct["Grid"].append(line.strip())
-
-    # Convert dct["Data"] as a numpy array
-    dct["Grid"] = np.array(dct["Grid"])
-
-    return dct
-
-
-def readFiles(folder):
-    """Read the data in folder and save them in a dict."""
-
-    # Resulting dict
-    result_dct = {}
-
-    # List of files in folder
-    files = [f for f in listdir(folder) if isfile(join(folder, f))]
-
-    # Loop over all the files in folder
-    for file in files:
-
-        # Read the data and save them in dct
-        file_name = re.sub("\...", "", file)
-        result_dct[file_name] = readData(join(folder, file))
-
-    return result_dct
+# Display test_dct
+data_dct["a_examplet"]
 
 
 def prediction(dataset_dct):
