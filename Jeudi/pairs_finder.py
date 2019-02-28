@@ -69,6 +69,7 @@ if __name__ == '__main__':
     result_dct = {}
 
     for dataframe_name in tqdm(data_dct):
+        print(dataframe_name)
         df = data_dct[dataframe_name]
 
         # Extract tags
@@ -84,6 +85,7 @@ if __name__ == '__main__':
         n_steps = len(tags_v) // length
 
         assignment = []
+        tags_save = []
 
         for k in tqdm(range(n_steps)):
 
@@ -98,20 +100,24 @@ if __name__ == '__main__':
 
             sub_assignment = kuhn_assignment(scores)
 
-            # Convertion to ids
-            sub_assignment_2 = []
+            # Convertion to ids and add tags
             for row, col in sub_assignment:
 
                 new_row = sub_ids_v[row]
                 new_col = sub_ids_v[col]
 
-                sub_assignment_2.append((new_row, new_col))
+                assignment.append((new_row, new_col))
 
-            assignment.extend(sub_assignment_2)
+                tags_row = sub_tags_v[row]
+                tags_col = sub_tags_v[col]
+
+                tags_save.append(list(set().union(tags_row, tags_col)))
 
         # Update result_dct
-        result_dct[dataframe_name] = assignment
+        result_dct[dataframe_name] = {"assignment": assignment,
+                                      "tags_save": tags_save}
 
     # Save result_dct
-    print(result_dct)
-    np.save('./Save/assignment_dct.npy', result_dct)
+#    print(result_dct["c_memorable_momentst"]["assignment"][:5])
+#    print(result_dct["c_memorable_momentst"]["tags_save"][:5])
+    np.save('./Save/assignment_dct_100.npy', result_dct)
