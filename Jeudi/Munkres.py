@@ -1,4 +1,4 @@
-from Munkres.munkres import Munkres, print_matrix
+from munkres import Munkres, print_matrix
 
 # Matrix of costs
 matrix = [[5, 9, 1],
@@ -17,4 +17,4 @@ for row, column in indexes:
     total += value
     print(f'({row}, {column}) -> {value}')
 
-print(f'total cost: {total}')'
+print(f'total cost: {total}')
